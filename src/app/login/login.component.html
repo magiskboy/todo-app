@@ -1,0 +1,30 @@
+<div class="valign-wrapper wrapper">
+    <div>
+        <h3>Login</h3>
+        <form
+            [formGroup]="loginForm"
+            (ngSubmit)="onSubmit()">
+            <div class="input-field">
+                <input 
+                    [formControl]="loginForm.controls['username']"
+                    type="text"
+                    id="login-username"
+                    class="validate"
+                    pattern="^[a-zA-Z0-9_]{8,16}$"
+                    required>
+                <label for="login-username">Username</label>
+            </div>
+            <div class="input-field">
+                <input
+                    [formControl]="loginForm.controls['password']"
+                    type="password"
+                    id="login-password"
+                    class="validate"
+                    pattern="^[a-zA-Z0-9_]{8,16}$"
+                    required>
+                <label for="login-password">Password</label>
+            </div>
+            <button type="submit" class="waves-effect waves-light btn">Login</button>
+        </form>
+    </div>
+</div>

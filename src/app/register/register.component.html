@@ -1,0 +1,45 @@
+<div class="valign-wrapper" style="height: 70vh">
+    <div style="width: 100%">
+        <h3>Register</h3>
+        <form
+            [formGroup]="registerForm"
+            (submit)="onSubmit()">
+            <div class="input-field">
+                <input
+                    type="text"
+                    id="register-username"
+                    class="validate"
+                    pattern="^[a-zA-Z0-9_]{8,20}$"
+                    [formControl]="registerForm.controls['username']">
+                <label for="register-username">Username</label>
+            </div>
+            <div class="input-field">
+                <input
+                    type="text"
+                    id="register-fullname"
+                    class="validate"
+                    [formControl]="registerForm.controls['fullname']">
+                <label for="register-fullname">Fullname</label>
+            </div>
+            <div class="input-field">
+                <input 
+                    type="password"
+                    id="register-password"
+                    class="validate"
+                    pattern="^[a-zA-Z0-9_]{8,20}$"
+                    [formControl]="registerForm.controls['password']">
+                <label for="register-password">Password</label>
+            </div>
+            <div class="input-field">
+                <input 
+                    type="password" 
+                    id="register-retype-password" 
+                    class="validate"
+                    pattern="^[a-zA-Z0-9_]{8,20}$"
+                    [formControl]="registerForm.controls['retypePassword']">
+                <label for="register-retype-password">Retype password</label>
+            </div>
+            <button type="submit" class="waves-effect waves-light btn">Register</button>
+        </form>
+    </div>
+</div>
