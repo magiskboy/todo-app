@@ -19,4 +19,12 @@ export class ConfigService {
     getRegisterUrl(): string {
         return `${this.server}/v1/users`;
     }
+
+    getTaskListUrl(): string {
+        return `${this.server}/v1/tasks`;
+    }
+
+    createTaskUrl(): string {
+        return `${this.server}/v1/tasks`;
+    }
 }

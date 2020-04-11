@@ -8,12 +8,15 @@ import { AppComponent } from './app.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { TaskPageComponent } from './task-page/task-page.component';
+import { TasksPageComponent } from './tasks-page/tasks-page.component';
 
 import { UserService } from '../services/user.service';
 import { ConfigService } from '../services/config.service';
 import { HttpService } from '../services/http.service';
 import { LocalStorageService } from '../services/localStorage.service';
+import { TaskService } from '../services/task.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { TaskComponent } from './task/task.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,9 @@ import { LocalStorageService } from '../services/localStorage.service';
     HomepageComponent,
     LoginComponent,
     RegisterComponent,
-    TaskPageComponent
+    TasksPageComponent,
+    NavbarComponent,
+    TaskComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +40,7 @@ import { LocalStorageService } from '../services/localStorage.service';
     ConfigService,
     HttpService,
     LocalStorageService,
+    TaskService,
   ],
   bootstrap: [AppComponent]
 })

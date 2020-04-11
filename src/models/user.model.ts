@@ -5,4 +5,13 @@ export class User {
         public fullname?: string,
         public createdAt?: Date,
     ) {}
+
+    static create(data: any): User {
+        return new User(
+            data['id'],
+            data['fullname'],
+            data['username'],
+            data['created_at']
+        );
+    }
 }

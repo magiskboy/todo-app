@@ -1,0 +1,9 @@
+<app-navbar></app-navbar>
+
+<ul class="collection">
+    <li 
+        class="collection-item"
+        *ngFor="let task of tasks">
+        <app-task [task]="task"></app-task>
+    </li>
+</ul>

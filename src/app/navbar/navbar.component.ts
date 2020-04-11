@@ -1,25 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
-import { Router } from '@angular/router';
-
+import { User } from 'src/models/user.model';
 
 @Component({
-  selector: 'app-task-page',
-  templateUrl: './task-page.component.html',
-  styleUrls: ['./task-page.component.less']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.less']
 })
-export class TaskPageComponent implements OnInit {
+export class NavbarComponent implements OnInit {
   public user: User;
 
   constructor(
     private userService: UserService,
-    router: Router
   ) {
     userService.currentUser.subscribe(user => {
-      if (user === null) {
-        router.navigate(['']);
-      }
       this.user = user;
     });
   }
@@ -27,7 +21,7 @@ export class TaskPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onLogout() {
+  onLogout(): void {
     this.userService.logoutUser();
   }
 

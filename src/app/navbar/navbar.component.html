@@ -1,0 +1,9 @@
+<nav>
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">Todo application</a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a>{{ user && user.fullname }}</a></li>
+            <li><a href="#" (click)="onLogout()">Logout</a></li>
+        </ul>
+    </div>
+</nav>

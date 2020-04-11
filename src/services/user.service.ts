@@ -5,16 +5,38 @@ import { ConfigService } from './config.service';
 import { HttpService } from './http.service';
 import { LocalStorageService } from './localStorage.service'
 
+
 @Injectable()
 export class UserService {
-    public currentUser: Rx.BehaviorSubject<User>;
+    public currentUser: Rx.BehaviorSubject<User> = new Rx.BehaviorSubject<User>(null);
 
     constructor(
         private http: HttpService,
         private configService: ConfigService,
         private localStorageService: LocalStorageService,
     ) {
-        this.currentUser = new Rx.BehaviorSubject<User>(null);
+        const accessToken: string = localStorageService.get('access_token');
+        if (accessToken) {
+            this.getUserInfo(accessToken);
+        }
+    }
+
+    authorization(): Rx.Observable<any> {
+        return new Rx.Observable(subscribe => {
+            const accessToken: string = this.localStorageService.get('access_token');
+            if (accessToken) {
+                this.getUserInfo(accessToken).subscribe(
+                    user => subscribe.next(user),
+                    error => {
+                        this.localStorageService.delete('access_token');
+                        subscribe.error(new Error('Token expired'));
+                    }
+                );
+            }
+            else {
+                subscribe.error(new Error('Unauthorize'));
+            }
+        });
     }
 
     setCurrentUser(newUser: User): void {
@@ -25,11 +47,14 @@ export class UserService {
         const loginEvent = new Rx.Subject<User>();
         this.getToken(username, password).subscribe(
             data => {
-                const access_token = data['access_token'];
-                this.localStorageService.set('access_token', access_token);
-                this.getUserInfo(access_token).subscribe(user => loginEvent.next(user));
+                const accessToken = data['access_token'];
+                this.localStorageService.set('access_token', accessToken);
+                this.getUserInfo(accessToken).subscribe(
+                    user => loginEvent.next(user),
+                    error => loginEvent.error(error)
+                );
             },
-            response => console.error(response)
+            error => loginEvent.error(error)
         );
         return loginEvent;
     }
@@ -48,41 +73,45 @@ export class UserService {
         const getUserInfoEvent = new Rx.Subject<User>();
         this.http.get(apiUrl, { Authorization: `Bearer ${accessToken}` }).subscribe(
             data => {
-                const newUser = new User(
-                    data['id'],
-                    data['fullname'],
-                    data['username'],
-                    data['created_at']
-                );
+                const newUser = User.create(data)
                 this.setCurrentUser(newUser);
                 getUserInfoEvent.next(newUser);
             },
-            response => {
-                console.error(response);
-            }
+            error => getUserInfoEvent.error(error)
         );
         return getUserInfoEvent;
     }
 
-    logoutUser(): void {
+    logoutUser(): Rx.Subject<any> {
         const accessToken: string = this.localStorageService.get('access_token');
-        if (accessToken != undefined) {
+        const logoutEvent: Rx.Subject<any> = new Rx.Subject<any>();
+        if (accessToken) {
             const apiUrl: string = this.configService.getLogoutUrl();
-            this.http.post(apiUrl, '', {Authorization: `Bearer ${accessToken}`}).subscribe(
+            this.http.post(apiUrl, {}, {Authorization: `Bearer ${accessToken}`}).subscribe(
                 data => {
                     this.localStorageService.delete('access_token');
                     this.setCurrentUser(null);
-                }
+                    logoutEvent.next(data);
+                },
+                error => logoutEvent.error(error)
             );
         }
+        return logoutEvent;
     }
 
-    registerUser(username: string, fullname: string, password: string): Rx.Observable<User> {
+    registerUser(username: string, fullname: string, password: string): Rx.Subject<User> {
         const apiUrl: string = this.configService.getRegisterUrl();
         const payload: any = {
             username, fullname, password
         }
-        console.log(payload);
-        return this.http.post(apiUrl, payload);
+        const registerEvent: Rx.Subject<User> = new Rx.Subject<User>();
+        this.http.post(apiUrl, payload).subscribe(
+            data => {
+                const newUser = User.create({...data, username, fullname});
+                registerEvent.next(newUser);
+            },
+            error => registerEvent.error(error)
+        );
+        return registerEvent;
     }
 }
